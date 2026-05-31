@@ -1,0 +1,4 @@
+interface:
+  display_name: "Orchestrator Workers"
+  short_description: "Coordinate GPT-5.5 planning with worker53 execution."
+  default_prompt: "Use $orchestrator-workers to decompose this coding task, coordinate worker53 subagents when useful, and integrate verified results."
