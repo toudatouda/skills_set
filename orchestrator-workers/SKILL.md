@@ -200,6 +200,30 @@ Handle deviations explicitly:
 
 When doing local execution beyond trivial reading, say which local-execution reason applies.
 
+## Subagent Tool Invocation Requirements
+
+Worker tier routing must be enforced through the subagent tool parameters, not only through prompt wording.
+
+When spawning worker53, use:
+
+```text
+agent_type: "worker"
+model: "gpt-5.4"
+reasoning_effort: choose the lowest level adequate for the task
+fork_context: false unless the worker truly needs full thread history
+```
+
+When spawning worker54mini, use:
+
+```text
+agent_type: "worker"
+model: "gpt-5.4-mini"
+reasoning_effort: low or medium unless the task clearly needs more
+fork_context: false unless the worker truly needs full thread history
+```
+
+Do not omit `model` for worker53 or worker54mini. Do not rely on default model inheritance for named worker tiers. If a worker53 spawn returns a model/backend error, retry once with the same `model: "gpt-5.4"` and a narrower prompt; do not fall back to any unavailable Codex-specific model.
+
 ## Delegation Prompt Pattern
 
 When spawning a worker, choose the tier first and include it in the prompt.
@@ -290,7 +314,7 @@ Avoid splits where multiple workers need to edit the same file unless the work c
 
 ## Model Selection
 
-Use the current subagent tool's default model inheritance unless the user explicitly asks for worker53/worker54mini or there is a clear task-specific reason to override.
+Use explicit model overrides for named worker tiers.
 
 - worker53 currently means GPT-5.4. Use it for high-confidence coding, root-cause diagnosis, failing-test repair, and correctness-sensitive implementation.
 - worker54mini means GPT-5.4 Mini. Use it for low-cost scouting, routine verification, summarization, simple tests, docs/config checks, and trivial patches.
