@@ -1,6 +1,6 @@
 ---
 name: orchestrator-workers
-description: Coordinate a GPT-5.5 planning agent with worker53 GPT-5.4 temporary high-confidence workers and worker54mini GPT-5.4 Mini subagents for coding, debugging, diagnosis, verification, and other execution work. Use when the user asks for a conductor-style workflow, command-style planning agent, professor/lab-style guidance, parallel workers, multi-agent implementation, task decomposition, worker53 or worker54mini delegation, "5.5 planner plus workers", or any coding task that may benefit from splitting into independently owned execution slices.
+description: Coordinate a GPT-5.5 planning agent with worker53 GPT-5.4 high-confidence workers and worker54mini GPT-5.4 Mini subagents for coding, debugging, diagnosis, verification, and other execution work. Use when the user asks for a conductor-style workflow, command-style planning agent, professor/lab-style guidance, parallel workers, multi-agent implementation, task decomposition, worker53 or worker54mini delegation, "5.5 planner plus workers", or any coding task that may benefit from splitting into independently owned execution slices.
 ---
 
 # Orchestrator Workers
@@ -207,7 +207,7 @@ When spawning a worker, choose the tier first and include it in the prompt.
 For worker53, use:
 
 ```text
-You are worker53, a GPT-5.4 high-confidence execution worker temporarily standing in for the GPT-5.3 Codex worker role.
+You are worker53, a GPT-5.4 high-confidence execution worker.
 You are not alone in the codebase. Do not revert user edits or edits from other workers.
 Ownership: <files/modules/responsibility>.
 Task: <bounded investigation, implementation, or verification request>.
@@ -292,10 +292,11 @@ Avoid splits where multiple workers need to edit the same file unless the work c
 
 Use the current subagent tool's default model inheritance unless the user explicitly asks for worker53/worker54mini or there is a clear task-specific reason to override.
 
-- Temporary routing: worker53 currently means GPT-5.4, standing in for the GPT-5.3 Codex worker role. Use it for high-confidence coding, root-cause diagnosis, failing-test repair, and correctness-sensitive implementation.
+- worker53 currently means GPT-5.4. Use it for high-confidence coding, root-cause diagnosis, failing-test repair, and correctness-sensitive implementation.
 - worker54mini means GPT-5.4 Mini. Use it for low-cost scouting, routine verification, summarization, simple tests, docs/config checks, and trivial patches.
-- When an explicit model override is needed, use the tool's current model names for GPT-5.4 and GPT-5.4 Mini.
-- Preserve the worker53 role name even while it is routed to GPT-5.4, so task policies do not need to change when routing is switched back later.
+- When spawning worker53, explicitly set the subagent model override to `gpt-5.4`.
+- When spawning worker54mini, explicitly set the subagent model override to `gpt-5.4-mini`.
+- Preserve the worker53 role name while it is routed to GPT-5.4, so task policies do not need to change if routing is changed later.
 - If the tool cannot target the intended model tier, state that limitation and use the closest available role while preserving the same task boundaries.
 
 ## User-Facing Language
