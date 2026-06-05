@@ -1,11 +1,11 @@
 ---
 name: orchestrator-workers
-description: Coordinate a GPT-5.5 planning agent with worker53 GPT-5.3 Codex subagents for coding, debugging, diagnosis, verification, and other heavy execution work. Use when the user asks for a conductor-style workflow, command-style planning agent, professor/lab-style guidance, parallel workers, multi-agent implementation, task decomposition, worker53 delegation, "5.5 planner plus 5.3 workers", or any coding task that may benefit from splitting into independently owned execution slices.
+description: Coordinate a GPT-5.5 planning agent with worker53 GPT-5.4 temporary high-confidence workers and worker54mini GPT-5.4 Mini subagents for coding, debugging, diagnosis, verification, and other execution work. Use when the user asks for a conductor-style workflow, command-style planning agent, professor/lab-style guidance, parallel workers, multi-agent implementation, task decomposition, worker53 or worker54mini delegation, "5.5 planner plus workers", or any coding task that may benefit from splitting into independently owned execution slices.
 ---
 
 # Orchestrator Workers
 
-Use this skill to turn a broad coding request into a controlled planner-worker workflow. The main agent acts like a professor or technical lead: it owns planning, design direction, hypothesis framing, task splitting, delegation, review, integration, and final accountability. Worker agents own bounded heavy lifting: deep repo inspection, non-trivial command execution, stdout/stderr analysis, reproduction loops, diagnosis loops, instrumentation, implementation slices, tests, builds, formatting, docs edits, and verification commands.
+Use this skill to turn a broad coding request into a controlled planner-worker workflow. The main agent acts like a professor or technical lead: it owns planning, design direction, hypothesis framing, task splitting, delegation, review, integration, and final accountability. Worker agents own bounded execution. Use worker54mini for low-cost scouting, evidence gathering, simple edits, and verification. Use worker53 for high-confidence coding, root-cause diagnosis, risky fixes, and integration-sensitive implementation.
 
 The goal is not to delegate every action. The goal is to keep the main agent out of low-difficulty, high-token execution loops while still allowing enough lightweight local probing to split work well.
 
@@ -13,7 +13,7 @@ The goal is not to delegate every action. The goal is to keep the main agent out
 
 The orchestrator should guide first and execute only when execution is needed to plan, unblock integration, or satisfy an explicit user request. It may do lightweight local reading and at most a small number of short local commands to understand context and define clean ownership boundaries.
 
-Local execution must not evolve into a debug loop. Once the work becomes repetitive, log-heavy, failure-driven, cross-file, or verification-heavy, delegate it to worker53.
+Local execution must not evolve into a debug loop. Once the work becomes repetitive, log-heavy, failure-driven, cross-file, or verification-heavy, delegate it to the cheapest worker tier that can do the work reliably.
 
 The main agent owns:
 
@@ -25,7 +25,17 @@ The main agent owns:
 - Integrating worker results into one coherent answer.
 - Making the final verification judgment and reporting residual risk.
 
-Worker53 owns:
+Worker54mini owns low-cost bounded work:
+
+- Fast codebase scouting and file mapping.
+- Reading large but low-risk areas and summarizing evidence.
+- Running simple or mechanical verification commands.
+- Checking formatting, docs, examples, and straightforward tests.
+- Implementing trivial or low-risk single-scope edits when acceptance is precise.
+- Comparing worker outputs against explicit checklists.
+- Producing compact evidence summaries that help GPT-5.5 or worker53 decide the next move.
+
+Worker53 owns high-confidence execution:
 
 - Deep inspection beyond the light context needed for planning.
 - Reproducing bugs or failures.
@@ -34,6 +44,8 @@ Worker53 owns:
 - Adding temporary instrumentation or focused regression tests.
 - Implementing bounded slices with clear file/module ownership.
 - Running tests, builds, demos, screenshots, or other verification commands.
+- Making non-trivial code changes where correctness, maintainability, or project conventions matter.
+- Resolving root cause when initial worker54mini evidence is insufficient.
 
 ## Decision Rule
 
@@ -60,7 +72,15 @@ Delegate immediately when any condition is met:
 - The task needs substantial repo inspection beyond the files needed to split ownership.
 - The task can be split into independent modules, routes, packages, adapters, tests, or verification passes.
 
-Prefer one worker before using multiple workers. Prefer 2-4 workers for large tasks only when ownership boundaries are obvious and write scopes are disjoint. Use more only when coordination cost is clearly low.
+Choose the worker tier by risk and uncertainty:
+
+- Use worker54mini for low-risk, high-volume, evidence-producing work: file discovery, broad but shallow repo inspection, docs checks, simple tests, simple command runs, log summarization, formatting checks, trivial patches, and independent verification.
+- Use worker53 for high-risk, correctness-sensitive, or judgment-heavy work: confirmed bug diagnosis, non-trivial implementation, multi-file fixes, failing-test repair, architecture-sensitive edits, complex command failures, and root-cause analysis after worker54mini scouting.
+- Escalate from worker54mini to worker53 when the mini worker reports uncertainty, hits a non-obvious failure, proposes a non-trivial fix, finds conflicting evidence, or would need to edit more than one small ownership scope.
+- Do not let worker54mini independently make final architecture, security, data-loss, migration, or cross-module correctness decisions.
+- Use worker54mini as a scout before worker53 when the repo area, failure surface, or verification command is unclear and the scouting result can reduce worker53 token burn.
+
+Prefer one worker before using multiple workers. Prefer 2-4 workers for large tasks only when ownership boundaries are obvious and write scopes are disjoint. Mix worker tiers deliberately: worker54mini for scouting and verification lanes, worker53 for implementation and hard diagnosis lanes. Use more only when coordination cost is clearly low.
 
 Never delegate the immediate blocker if the main agent cannot make progress until that answer returns. Do the blocker locally, then delegate sidecar or downstream work.
 
@@ -112,19 +132,41 @@ Treat orchestration as a constrained scheduling problem. Optimize for enough con
 Dispatch by expected value:
 
 - Use 0 workers for tiny, single-file, immediate-critical-path tasks.
-- Use 1 worker for one bounded diagnosis, implementation slice, or verification pass.
-- Use 2-4 workers when tasks are independent, ownership is clear, and parallelism reduces wall-clock time or main-thread token burn.
+- Use 1 worker54mini for one bounded scout, simple verification pass, log summary, file map, or trivial patch.
+- Use 1 worker53 for one bounded non-trivial diagnosis, implementation slice, failing-test repair, or correctness-sensitive verification.
+- Use worker54mini before worker53 when a cheap scouting pass can narrow files, commands, hypotheses, or acceptance checks.
+- Use 2-4 mixed workers when tasks are independent, ownership is clear, and parallelism reduces wall-clock time or main-thread token burn.
 - Use more than 4 workers only when interfaces are obvious, outputs are small, and integration is cheap.
 
 Prioritize work in this order:
 
 1. Resolve blockers to understanding the mission and boundary.
-2. Reduce high uncertainty with diagnosis or discovery.
-3. Reduce high risk with verification or tests.
-4. Implement clearly bounded independent slices.
-5. Run the minimum sufficient integration and regression checks.
+2. Reduce high uncertainty with worker54mini discovery or worker53 diagnosis, depending on risk.
+3. Reduce high risk with verification or tests, usually worker54mini first unless the check requires deep judgment.
+4. Implement clearly bounded independent slices, using worker53 for non-trivial code and worker54mini for trivial or mechanical edits.
+5. Run the minimum sufficient integration and regression checks, using worker54mini for routine checks and worker53 for failures.
 
 Delegate investigation only when the expected information can change the plan, ownership split, implementation choice, or verification scope. Do not spend worker tokens on curiosity-only exploration.
+
+## Worker Tier Matrix
+
+Use this matrix when assigning work packages:
+
+| Work type | Default tier | Upgrade trigger |
+| --- | --- | --- |
+| File discovery, ownership map, dependency map | worker54mini | Architecture is unclear or findings conflict |
+| Long stdout/stderr summarization | worker54mini | Failure cause is non-obvious |
+| Simple test/build command verification | worker54mini | Command fails or needs diagnosis |
+| Docs/examples/config consistency check | worker54mini | Change affects runtime behavior |
+| Trivial single-scope patch with precise acceptance | worker54mini | More than one file/scope or behavior is subtle |
+| Bug reproduction and first evidence pass | worker54mini | Reproduction requires instrumentation or interpretation |
+| Root-cause diagnosis | worker53 | Keep on worker53 unless evidence shows it is trivial |
+| Non-trivial implementation | worker53 | Keep on worker53 |
+| Failing test repair | worker53 | Use worker54mini only for isolated mechanical fixes |
+| Architecture-sensitive, migration, security, data, or concurrency changes | worker53 | Escalate to GPT-5.5 for design decision before implementation |
+| Post-integration routine regression check | worker54mini | Failures go to worker53 diagnosis |
+
+When in doubt, start with worker54mini only if the output is evidence, not final judgment. Start with worker53 when the worker must decide and modify.
 
 ## Feedback Control Loop
 
@@ -147,8 +189,8 @@ Handle deviations explicitly:
 
 1. Read only lightweight context needed to define the mission, boundary, and ownership split.
 2. State a short plan when the work is substantial, including the local critical path and delegated sidecar work.
-3. Break the task into work packages with input, output, boundary, acceptance, and escalation rules.
-4. Spawn worker53 subagents only for concrete, self-contained investigation, implementation, or verification tasks.
+3. Break the task into work packages with input, output, boundary, acceptance, escalation rules, and worker tier.
+4. Spawn worker54mini or worker53 subagents only for concrete, self-contained investigation, implementation, or verification tasks.
 5. Tell each worker it is not alone in the codebase and must not revert user edits or edits from other workers.
 6. Ask workers to run needed commands directly, inspect raw stdout/stderr, diagnose errors before changing code, make scoped edits when appropriate, and report compact evidence plus changed paths.
 7. Observe worker evidence, compare it with acceptance criteria, and correct the plan if needed.
@@ -160,10 +202,12 @@ When doing local execution beyond trivial reading, say which local-execution rea
 
 ## Delegation Prompt Pattern
 
-When spawning a worker, include:
+When spawning a worker, choose the tier first and include it in the prompt.
+
+For worker53, use:
 
 ```text
-You are worker53, a GPT-5.3 Codex execution worker.
+You are worker53, a GPT-5.4 high-confidence execution worker temporarily standing in for the GPT-5.3 Codex worker role.
 You are not alone in the codebase. Do not revert user edits or edits from other workers.
 Ownership: <files/modules/responsibility>.
 Task: <bounded investigation, implementation, or verification request>.
@@ -182,10 +226,37 @@ Output:
 - Escalation needed: state "none" or ask for a narrower follow-up.
 ```
 
+For worker54mini, use:
+
+```text
+You are worker54mini, a GPT-5.4 Mini execution worker.
+You are not alone in the codebase. Do not revert user edits or edits from other workers.
+Role: low-cost scout, verifier, summarizer, or trivial-patch worker. Prefer evidence over broad judgment.
+Ownership: <files/modules/responsibility>.
+Task: <bounded scouting, verification, summarization, or trivial edit request>.
+Interfaces: <read-only context, forbidden files/modules, dependencies on other workers>.
+Acceptance: <evidence or behavior that proves this work package is complete>.
+Constraints: keep output compact; follow existing project patterns; do not broaden scope; avoid non-trivial refactors.
+Execution: run the needed commands yourself; inspect stdout/stderr; summarize key facts. If diagnosis or fix becomes non-obvious, stop and escalate instead of guessing.
+Output:
+- Summary:
+- Evidence: key files inspected, command exit codes, and minimal relevant stdout/stderr facts.
+- Files changed:
+- Verification:
+- Uncertainty / escalation trigger:
+- Ownership deviations: state "none" or explain.
+```
+
 For debugging tasks, prefer:
 
 ```text
 Task: Reproduce and diagnose <bug/failure> within <ownership scope>. Run relevant commands, capture key exit codes and stdout/stderr facts, identify the likely cause, implement a scoped fix only if the cause is confirmed, and verify the result.
+```
+
+Use worker54mini for the first reproduction/evidence pass only when diagnosis is not yet required:
+
+```text
+Task: Reproduce <bug/failure> within <ownership scope> and report exact commands, exit codes, key output facts, and files implicated. Do not implement a fix. If the cause is non-obvious, ask for worker53 escalation.
 ```
 
 For verification tasks, prefer:
@@ -219,16 +290,24 @@ Avoid splits where multiple workers need to edit the same file unless the work c
 
 ## Model Selection
 
-Use the current subagent tool's default model inheritance unless the user explicitly asks for worker53 or there is a clear task-specific reason to use GPT-5.3 Codex. When an explicit worker53 model override is needed, use the tool's current model name for GPT-5.3 Codex.
+Use the current subagent tool's default model inheritance unless the user explicitly asks for worker53/worker54mini or there is a clear task-specific reason to override.
+
+- Temporary routing: worker53 currently means GPT-5.4, standing in for the GPT-5.3 Codex worker role. Use it for high-confidence coding, root-cause diagnosis, failing-test repair, and correctness-sensitive implementation.
+- worker54mini means GPT-5.4 Mini. Use it for low-cost scouting, routine verification, summarization, simple tests, docs/config checks, and trivial patches.
+- When an explicit model override is needed, use the tool's current model names for GPT-5.4 and GPT-5.4 Mini.
+- Preserve the worker53 role name even while it is routed to GPT-5.4, so task policies do not need to change when routing is switched back later.
+- If the tool cannot target the intended model tier, state that limitation and use the closest available role while preserving the same task boundaries.
 
 ## User-Facing Language
 
 When the user asks for the conductor-style workflow, interpret it as:
 
 - Plan and design with the main GPT-5.5 agent.
-- Use worker53 for heavy lifting: deep inspection, command execution, reproduction, diagnosis, implementation slices, and verification.
+- Use worker54mini for low-cost scouting, summarization, routine command runs, simple verification, and trivial patches.
+- Use worker53 for heavy lifting: deep diagnosis, non-trivial command failure analysis, implementation slices, failing-test repair, and correctness-sensitive verification.
 - Keep the orchestrator in a professor/technical-lead role: guide, challenge, redirect, review, and integrate.
 - Let the orchestrator perform only lightweight local probing and integration checks.
 - Use hard delegation thresholds to prevent the main thread from drifting into debug loops.
+- Escalate from worker54mini to worker53 when evidence becomes ambiguous, failures are non-obvious, or implementation risk rises.
 - Keep ownership boundaries explicit.
 - Integrate and report as one accountable agent based on reviewed worker results.
