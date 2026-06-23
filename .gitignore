@@ -1,0 +1,8 @@
+.system/
+plugins/cache/
+
+*.log
+*.tmp
+tmp/
+temp/
+outputs/
