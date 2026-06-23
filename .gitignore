@@ -6,3 +6,6 @@ plugins/cache/
 tmp/
 temp/
 outputs/
+.tmp-*/
+__pycache__/
+.pytest_cache/

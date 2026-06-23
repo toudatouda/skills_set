@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "skills": [
+    {
+      "name": "orchestrator-workers",
+      "type": "local",
+      "required": true,
+      "description": "Personal planner-worker orchestration skill maintained in this repository."
+    },
+    {
+      "name": "professional-book-reading-tutor",
+      "type": "local",
+      "required": true,
+      "description": "Personal technical reading tutor skill maintained in this repository."
+    },
+    {
+      "name": "skill-installer",
+      "type": "builtin",
+      "required": true,
+      "description": "Codex system skill for installing skills."
+    },
+    {
+      "name": "openai-docs",
+      "type": "builtin",
+      "required": false,
+      "description": "Codex system skill for official OpenAI documentation lookups."
+    },
+    {
+      "name": "browser:control-in-app-browser",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-bundled/browser",
+      "directory": "control-in-app-browser",
+      "description": "Codex Desktop in-app browser control skill."
+    },
+    {
+      "name": "chrome:control-chrome",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-bundled/chrome",
+      "directory": "control-chrome",
+      "description": "Chrome control skill for desktop sessions."
+    },
+    {
+      "name": "pdf:pdf",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-primary-runtime/pdf",
+      "directory": "pdf",
+      "description": "PDF reading, rendering, and generation skill."
+    },
+    {
+      "name": "documents:documents",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-primary-runtime/documents",
+      "directory": "documents",
+      "description": "DOCX and Word document artifact skill."
+    },
+    {
+      "name": "spreadsheets:Spreadsheets",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-primary-runtime/spreadsheets",
+      "directory": "spreadsheets",
+      "description": "Spreadsheet artifact skill."
+    },
+    {
+      "name": "presentations:Presentations",
+      "type": "plugin",
+      "required": false,
+      "source": "openai-primary-runtime/presentations",
+      "directory": "presentations",
+      "description": "Presentation artifact skill."
+    },
+    {
+      "name": "ponytail:ponytail",
+      "type": "plugin",
+      "required": false,
+      "source": "ponytail plugin",
+      "directory": "ponytail",
+      "description": "Minimal-solution engineering mode."
+    }
+  ]
+}

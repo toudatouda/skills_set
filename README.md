@@ -21,6 +21,8 @@ skills_set/
     SKILL.md
     references/
       output-template.md
+  skills-manifest.json
+  manage-skills.py
   install.sh
   install.ps1
   README.md
@@ -70,6 +72,53 @@ CODEX_HOME="$HOME/.codex" ./install.sh
 ```
 
 安装完成后，重启 Codex，让新 skills 被重新加载。
+
+## 自动查缺补漏
+
+`skills-manifest.json` 是新环境配置清单，包含三类 skill：
+
+- `local`: 本仓库维护的个人 skill，可以自动安装。
+- `github`: 有明确 GitHub 来源的外部 skill，可以自动安装。
+- `builtin` / `plugin` / `manual`: 只检查和报告，不复制安装。
+
+查看清单和当前安装状态：
+
+```bash
+python manage-skills.py list
+```
+
+检查新环境缺什么：
+
+```bash
+python manage-skills.py doctor
+```
+
+自动补装可安装项：
+
+```bash
+python manage-skills.py install-missing
+```
+
+预览安装动作：
+
+```bash
+python manage-skills.py install-missing --dry-run
+```
+
+使用自定义 Codex skills 目录：
+
+```bash
+python manage-skills.py doctor --dest "$HOME/.codex/skills"
+```
+
+Windows 同样可用：
+
+```powershell
+python .\manage-skills.py doctor
+python .\manage-skills.py install-missing
+```
+
+`doctor` 如果发现 required skill 缺失，会返回非零退出码，方便在新机器初始化脚本中使用。系统 skill 会在 `.codex/skills/.system` 下检测，插件 skill 会在 `.codex/plugins/cache` 下检测；缺失时，根据输出安装对应 Codex Desktop 插件、运行时或升级 Codex。
 
 ## Windows 本地安装
 
