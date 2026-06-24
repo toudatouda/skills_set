@@ -8,6 +8,12 @@
       "description": "Personal planner-worker orchestration skill maintained in this repository."
     },
     {
+      "name": "orchestrator-workpack-templates",
+      "type": "local",
+      "required": true,
+      "description": "Personal work-package templates for orchestrator worker workflows maintained in this repository."
+    },
+    {
       "name": "professional-book-reading-tutor",
       "type": "local",
       "required": true,

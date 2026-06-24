@@ -5,6 +5,7 @@
 ## Skills
 
 - `orchestrator-workers`: Coordinate a GPT-5.5 planning agent with worker53/worker54mini subagents for planning, delegation, review, and integration.
+- `orchestrator-workpack-templates`: Provide reusable work-package templates for orchestrator-worker plans and prompts.
 - `professional-book-reading-tutor`: Read, explain, derive formulas from, and create review cards for professional books, textbooks, scanned pages, and dense technical material.
 
 ## 目录约定
@@ -17,6 +18,8 @@ skills_set/
     SKILL.md
     agents/
       openai.yaml
+  orchestrator-workpack-templates/
+    SKILL.md
   professional-book-reading-tutor/
     SKILL.md
     references/
