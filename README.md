@@ -123,6 +123,24 @@ python .\manage-skills.py install-missing
 
 `doctor` 如果发现 required skill 缺失，会返回非零退出码，方便在新机器初始化脚本中使用。系统 skill 会在 `.codex/skills/.system` 下检测，插件 skill 会在 `.codex/plugins/cache` 下检测；缺失时，根据输出安装对应 Codex Desktop 插件、运行时或升级 Codex。
 
+## 工具链查缺补漏
+
+`toolchains.json` 记录本机常用的非 skill 工具链，用于新 WSL/Linux 环境快速补装：
+
+- `codegraph`: `@colbymchenry/codegraph@1.0.1`
+- `openspec`: `@fission-ai/openspec@1.4.1`
+- `hindsight`: 检查 `~/.hindsight/codex` 脚本和配置，只报告人工恢复步骤，不复制记忆数据库。
+
+在新环境中执行：
+
+```bash
+python bootstrap-toolchains.py doctor
+python bootstrap-toolchains.py install --dry-run
+python bootstrap-toolchains.py install
+```
+
+`install` 只自动安装清单里有明确安装源的工具，例如 npm global 包。Hindsight 涉及 hooks、wrapper、记忆库和目标环境策略，脚本只做检查和提示，避免误把本机记忆数据复制到新环境。
+
 ## Windows 本地安装
 
 在 PowerShell 7 中运行：

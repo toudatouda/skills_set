@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "tools": [
+    {
+      "name": "codegraph",
+      "required": true,
+      "platform": "wsl-linux",
+      "check": [
+        "codegraph",
+        "--version"
+      ],
+      "install": {
+        "type": "npm-global",
+        "package": "@colbymchenry/codegraph",
+        "version": "1.0.1",
+        "registry": "https://registry.npmmirror.com"
+      },
+      "notes": "Installed on this machine in WSL as /usr/local/bin/codegraph. Project .codegraph directories are cache/index data and should usually be rebuilt per project."
+    },
+    {
+      "name": "openspec",
+      "required": true,
+      "platform": "wsl-linux",
+      "check": [
+        "openspec",
+        "--version"
+      ],
+      "install": {
+        "type": "npm-global",
+        "package": "@fission-ai/openspec",
+        "version": "1.4.1",
+        "registry": "https://registry.npmmirror.com"
+      },
+      "notes": "Installed on this machine in WSL as /usr/local/bin/openspec. Project openspec/ directories belong with project source repositories."
+    },
+    {
+      "name": "hindsight",
+      "required": true,
+      "platform": "wsl-linux",
+      "check_paths": [
+        "~/.hindsight/codex/scripts/session_start.py",
+        "~/.hindsight/codex/scripts/recall.py",
+        "~/.hindsight/codex/scripts/retain.py",
+        "~/.hindsight/codex/settings.json"
+      ],
+      "install": {
+        "type": "manual",
+        "summary": "Restore or install Hindsight under ~/.hindsight and wire Codex hooks/wrappers for the target environment. Do not copy memory databases through this skills repository."
+      },
+      "notes": "This machine uses Codex hooks that call $CODEX_HOME/bin/hindsight-wsl-hook.ps1, which delegates to WSL ~/.hindsight/codex/scripts/*.py."
+    }
+  ]
+}
