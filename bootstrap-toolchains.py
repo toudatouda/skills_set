@@ -69,6 +69,20 @@ def install_tool(tool: dict[str, Any], dry_run: bool) -> None:
         subprocess.run(command, check=True)
         print(f"Installed {name}: {spec}")
         return
+    if install_type == "codex-plugin":
+        source = str(install["marketplace_source"])
+        plugin = str(install["plugin"])
+        marketplace = str(install.get("marketplace", ""))
+        add_marketplace = ["codex", "plugin", "marketplace", "add", source]
+        add_plugin = ["codex", "plugin", "add", f"{plugin}@{marketplace}" if marketplace else plugin]
+        if dry_run:
+            print(f"Would install {name}: {' '.join(add_marketplace)}")
+            print(f"Would install {name}: {' '.join(add_plugin)}")
+            return
+        subprocess.run(add_marketplace, check=True)
+        subprocess.run(add_plugin, check=True)
+        print(f"Installed {name}: {plugin}{'@' + marketplace if marketplace else ''}")
+        return
     print(f"Manual setup required for {name}: {install.get('summary', tool.get('notes', 'see toolchains.json'))}")
 
 

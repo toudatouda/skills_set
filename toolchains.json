@@ -48,6 +48,21 @@
         "summary": "Restore or install Hindsight under ~/.hindsight and wire Codex hooks/wrappers for the target environment. Do not copy memory databases through this skills repository."
       },
       "notes": "This machine uses Codex hooks that call $CODEX_HOME/bin/hindsight-wsl-hook.ps1, which delegates to WSL ~/.hindsight/codex/scripts/*.py."
+    },
+    {
+      "name": "ponytail",
+      "required": true,
+      "platform": "codex-plugin",
+      "check_paths": [
+        "~/.codex/plugins/cache/ponytail/ponytail"
+      ],
+      "install": {
+        "type": "codex-plugin",
+        "marketplace_source": "https://github.com/DietrichGebert/ponytail.git",
+        "marketplace": "ponytail",
+        "plugin": "ponytail"
+      },
+      "notes": "Codex plugin marketplace from https://github.com/DietrichGebert/ponytail.git; installs plugin ponytail@ponytail."
     }
   ]
 }

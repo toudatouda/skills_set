@@ -130,6 +130,7 @@ python .\manage-skills.py install-missing
 - `codegraph`: `@colbymchenry/codegraph@1.0.1`
 - `openspec`: `@fission-ai/openspec@1.4.1`
 - `hindsight`: 检查 `~/.hindsight/codex` 脚本和配置，只报告人工恢复步骤，不复制记忆数据库。
+- `ponytail`: Codex 插件 marketplace，来源 `https://github.com/DietrichGebert/ponytail.git`；缺失时自动执行 `codex plugin marketplace add` 和 `codex plugin add`。
 
 在新环境中执行：
 
@@ -139,7 +140,7 @@ python bootstrap-toolchains.py install --dry-run
 python bootstrap-toolchains.py install
 ```
 
-`install` 只自动安装清单里有明确安装源的工具，例如 npm global 包。Hindsight 涉及 hooks、wrapper、记忆库和目标环境策略，脚本只做检查和提示，避免误把本机记忆数据复制到新环境。
+`install` 只自动安装清单里有明确安装源的工具，例如 npm global 包和 Codex 插件 marketplace。Hindsight 涉及 hooks、wrapper、记忆库和目标环境策略，脚本只做检查和提示，避免误把本机记忆数据复制到新环境。
 
 ## Windows 本地安装
 
