@@ -2,6 +2,45 @@
   "version": 1,
   "skills": [
     {
+      "name": "using-superpowers",
+      "type": "local",
+      "required": true,
+      "description": "Superpowers entry skill that enforces skill discovery and use before task work."
+    },
+    {
+      "name": "brainstorming",
+      "type": "local",
+      "required": true,
+      "description": "Superpowers design workflow for creative or behavior-changing work."
+    },
+    {
+      "name": "test-driven-development",
+      "type": "local",
+      "required": true,
+      "description": "Superpowers TDD workflow for feature and bugfix implementation."
+    },
+    {
+      "name": "verification-before-completion",
+      "type": "local",
+      "required": true,
+      "description": "Superpowers verification gate before completion claims."
+    },
+    {
+      "name": "writing-plans",
+      "type": "local",
+      "required": true,
+      "description": "Superpowers implementation planning workflow."
+    },
+    {
+      "name": "karpathy-guidelines",
+      "type": "github",
+      "required": true,
+      "repo": "multica-ai/andrej-karpathy-skills",
+      "path": "skills/karpathy-guidelines",
+      "ref": "main",
+      "description": "Andrej Karpathy-style coding guidelines from multica-ai/andrej-karpathy-skills."
+    },
+    {
       "name": "orchestrator-workers",
       "type": "local",
       "required": true,

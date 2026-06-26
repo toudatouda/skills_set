@@ -4,6 +4,12 @@
 
 ## Skills
 
+- `using-superpowers`: Superpowers entry skill for enforcing skill discovery and use.
+- `brainstorming`: Superpowers design workflow before creative or behavior-changing work.
+- `test-driven-development`: Superpowers TDD workflow.
+- `verification-before-completion`: Superpowers verification gate before completion claims.
+- `writing-plans`: Superpowers implementation planning workflow.
+- `karpathy-guidelines`: Andrej Karpathy-style coding guidelines installed from `multica-ai/andrej-karpathy-skills`.
 - `orchestrator-workers`: Coordinate a GPT-5.5 planning agent with worker53/worker54mini subagents for planning, delegation, review, and integration.
 - `orchestrator-workpack-templates`: Provide reusable work-package templates for orchestrator-worker plans and prompts.
 - `professional-book-reading-tutor`: Read, explain, derive formulas from, and create review cards for professional books, textbooks, scanned pages, and dense technical material.
@@ -14,6 +20,16 @@
 
 ```text
 skills_set/
+  using-superpowers/
+    SKILL.md
+  brainstorming/
+    SKILL.md
+  test-driven-development/
+    SKILL.md
+  verification-before-completion/
+    SKILL.md
+  writing-plans/
+    SKILL.md
   orchestrator-workers/
     SKILL.md
     agents/
