@@ -10,6 +10,7 @@
 - `verification-before-completion`: Superpowers verification gate before completion claims.
 - `writing-plans`: Superpowers implementation planning workflow.
 - `karpathy-guidelines`: Andrej Karpathy-style coding guidelines installed from `multica-ai/andrej-karpathy-skills`.
+- `mattpocock/skills`: Matt Pocock engineering and productivity skills installed from GitHub by `manage-skills.py install-missing`.
 - `orchestrator-workers`: Coordinate a GPT-5.5 planning agent with worker53/worker54mini subagents for planning, delegation, review, and integration.
 - `orchestrator-workpack-templates`: Provide reusable work-package templates for orchestrator-worker plans and prompts.
 - `professional-book-reading-tutor`: Read, explain, derive formulas from, and create review cards for professional books, textbooks, scanned pages, and dense technical material.
@@ -99,6 +100,14 @@ CODEX_HOME="$HOME/.codex" ./install.sh
 - `local`: 本仓库维护的个人 skill，可以自动安装。
 - `github`: 有明确 GitHub 来源的外部 skill，可以自动安装。
 - `builtin` / `plugin` / `manual`: 只检查和报告，不复制安装。
+
+当前自动补装的 GitHub skills 包括：
+
+- `multica-ai/andrej-karpathy-skills`: `karpathy-guidelines`
+- `mattpocock/skills`: `ask-matt`, `codebase-design`, `diagnosing-bugs`, `domain-modeling`, `grill-with-docs`, `implement`, `improve-codebase-architecture`, `prototype`, `resolving-merge-conflicts`, `setup-matt-pocock-skills`, `tdd`, `to-issues`, `to-prd`, `triage`, `grill-me`, `grilling`, `handoff`, `teach`, `writing-great-skills`
+- `mattpocock/skills` optional misc skills: `git-guardrails-claude-code`, `migrate-to-shoehorn`, `scaffold-exercises`, `setup-pre-commit`
+
+未自动安装 `mattpocock/skills` 中的 `deprecated/`、`in-progress/`、`personal/` 目录，避免把废弃、半成品或作者个人用途的 skill 当作新环境基线。
 
 查看清单和当前安装状态：
 

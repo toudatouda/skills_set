@@ -41,6 +41,213 @@
       "description": "Andrej Karpathy-style coding guidelines from multica-ai/andrej-karpathy-skills."
     },
     {
+      "name": "ask-matt",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/ask-matt",
+      "ref": "main",
+      "description": "Router over Matt Pocock's user-invoked engineering skill flows."
+    },
+    {
+      "name": "codebase-design",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/codebase-design",
+      "ref": "main",
+      "description": "Shared vocabulary for designing deep modules and testable interfaces."
+    },
+    {
+      "name": "diagnosing-bugs",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/diagnosing-bugs",
+      "ref": "main",
+      "description": "Disciplined diagnosis loop for hard bugs and performance regressions."
+    },
+    {
+      "name": "domain-modeling",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/domain-modeling",
+      "ref": "main",
+      "description": "Build and sharpen a project's domain model, glossary, and ADRs."
+    },
+    {
+      "name": "grill-with-docs",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/grill-with-docs",
+      "ref": "main",
+      "description": "Interview a plan or design while updating project docs."
+    },
+    {
+      "name": "implement",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/implement",
+      "ref": "main",
+      "description": "Implement work from a PRD or issue set."
+    },
+    {
+      "name": "improve-codebase-architecture",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/improve-codebase-architecture",
+      "ref": "main",
+      "description": "Scan a codebase for architecture deepening opportunities."
+    },
+    {
+      "name": "prototype",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/prototype",
+      "ref": "main",
+      "description": "Build throwaway prototypes to answer design questions."
+    },
+    {
+      "name": "resolving-merge-conflicts",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/resolving-merge-conflicts",
+      "ref": "main",
+      "description": "Resolve in-progress git merge or rebase conflicts."
+    },
+    {
+      "name": "setup-matt-pocock-skills",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/setup-matt-pocock-skills",
+      "ref": "main",
+      "description": "Configure issue tracker, triage labels, and domain doc layout for Matt Pocock engineering skills."
+    },
+    {
+      "name": "tdd",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/tdd",
+      "ref": "main",
+      "description": "Matt Pocock test-driven development workflow."
+    },
+    {
+      "name": "to-issues",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/to-issues",
+      "ref": "main",
+      "description": "Break plans or PRDs into independently grabbable issues."
+    },
+    {
+      "name": "to-prd",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/to-prd",
+      "ref": "main",
+      "description": "Turn conversation context into a PRD."
+    },
+    {
+      "name": "triage",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/engineering/triage",
+      "ref": "main",
+      "description": "Move issues and external PRs through a triage state machine."
+    },
+    {
+      "name": "grill-me",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/grill-me",
+      "ref": "main",
+      "description": "Relentless interview to sharpen a plan or design."
+    },
+    {
+      "name": "grilling",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/grilling",
+      "ref": "main",
+      "description": "Reusable grilling loop behind grill-me and grill-with-docs."
+    },
+    {
+      "name": "handoff",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/handoff",
+      "ref": "main",
+      "description": "Compact the current conversation into a handoff document."
+    },
+    {
+      "name": "teach",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/teach",
+      "ref": "main",
+      "description": "Teach a skill or concept inside the current workspace."
+    },
+    {
+      "name": "writing-great-skills",
+      "type": "github",
+      "required": true,
+      "repo": "mattpocock/skills",
+      "path": "skills/productivity/writing-great-skills",
+      "ref": "main",
+      "description": "Reference for writing and editing predictable skills."
+    },
+    {
+      "name": "git-guardrails-claude-code",
+      "type": "github",
+      "required": false,
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/git-guardrails-claude-code",
+      "ref": "main",
+      "description": "Claude Code git guardrail hooks for blocking dangerous git operations."
+    },
+    {
+      "name": "migrate-to-shoehorn",
+      "type": "github",
+      "required": false,
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/migrate-to-shoehorn",
+      "ref": "main",
+      "description": "Migrate tests from `as` type assertions to @total-typescript/shoehorn."
+    },
+    {
+      "name": "scaffold-exercises",
+      "type": "github",
+      "required": false,
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/scaffold-exercises",
+      "ref": "main",
+      "description": "Scaffold course exercise directories."
+    },
+    {
+      "name": "setup-pre-commit",
+      "type": "github",
+      "required": false,
+      "repo": "mattpocock/skills",
+      "path": "skills/misc/setup-pre-commit",
+      "ref": "main",
+      "description": "Set up Husky pre-commit hooks with lint-staged, type checking, and tests."
+    },
+    {
       "name": "orchestrator-workers",
       "type": "local",
       "required": true,

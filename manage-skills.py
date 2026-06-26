@@ -123,9 +123,26 @@ def github_url(skill: Skill) -> str:
 
 
 def install_github(skill: Skill, dest: Path, dry_run: bool) -> None:
-    target = installed_path(skill, dest)
+    install_github_many([skill], dest, dry_run)
+
+
+def install_github_many(skills: list[Skill], dest: Path, dry_run: bool) -> None:
+    if not skills:
+        return
+
+    repo = skills[0].repo
+    ref = skills[0].ref
+    if any(skill.repo != repo or skill.ref != ref for skill in skills):
+        raise ValueError("github batch requires all skills to share repo and ref")
+
+    for skill in skills:
+        if not skill.repo or not skill.path:
+            raise ValueError(f"github skill {skill.name} requires repo and path")
+
     if dry_run:
-        print(f"Would install {skill.name} from {skill.repo}:{skill.path} -> {target}")
+        for skill in skills:
+            target = installed_path(skill, dest)
+            print(f"Would install {skill.name} from {skill.repo}:{skill.path} -> {target}")
         return
 
     dest.mkdir(parents=True, exist_ok=True)
@@ -140,20 +157,37 @@ def install_github(skill: Skill, dest: Path, dry_run: bool) -> None:
                 "--filter=blob:none",
                 "--sparse",
                 "--branch",
-                skill.ref,
-                github_url(skill),
+                ref,
+                github_url(skills[0]),
                 str(checkout),
             ],
             check=True,
         )
-        subprocess.run(["git", "-C", str(checkout), "sparse-checkout", "set", skill.path], check=True)
-        source = checkout / skill.path
-        if not (source / "SKILL.md").is_file():
-            raise FileNotFoundError(f"github skill source missing SKILL.md: {source}")
-        if target.exists():
-            shutil.rmtree(target)
-        shutil.copytree(source, target)
-    print(f"Installed {skill.name} -> {target}")
+        subprocess.run(
+            ["git", "-C", str(checkout), "sparse-checkout", "set", *[skill.path for skill in skills]],
+            check=True,
+        )
+        for skill in skills:
+            source = checkout / skill.path
+            if not (source / "SKILL.md").is_file():
+                raise FileNotFoundError(f"github skill source missing SKILL.md: {source}")
+            target = installed_path(skill, dest)
+            if target.exists():
+                shutil.rmtree(target)
+            shutil.copytree(source, target)
+            print(f"Installed {skill.name} -> {target}")
+
+
+def github_batch_key(skill: Skill) -> tuple[str, str]:
+    return (skill.repo, skill.ref)
+
+
+def install_github_batches(skills: list[Skill], dest: Path, dry_run: bool) -> None:
+    batches: dict[tuple[str, str], list[Skill]] = {}
+    for skill in skills:
+        batches.setdefault(github_batch_key(skill), []).append(skill)
+    for batch in batches.values():
+        install_github_many(batch, dest, dry_run)
 
 
 def can_install(skill: Skill) -> bool:
@@ -191,15 +225,18 @@ def doctor(skills: list[Skill], dest: Path) -> int:
 
 def install_missing(skills: list[Skill], dest: Path, dry_run: bool) -> int:
     skipped = []
+    github = []
     for skill in skills:
         if is_installed(skill, dest):
             continue
         if skill.type == "local":
             install_local(skill, dest, dry_run)
         elif skill.type == "github":
-            install_github(skill, dest, dry_run)
+            github.append(skill)
         else:
             skipped.append(skill)
+
+    install_github_batches(github, dest, dry_run)
 
     for skill in skipped:
         print(f"Skipped {skill.name}: {skill.type} skills must be provided by Codex, plugins, or manual setup.")

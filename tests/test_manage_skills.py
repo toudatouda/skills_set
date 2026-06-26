@@ -1,10 +1,20 @@
 import json
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "manage-skills.py"
+
+
+def load_manage_module():
+    spec = importlib.util.spec_from_file_location("manage_skills", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
 def run_manage(tmp_path, manifest):
@@ -114,3 +124,64 @@ def test_doctor_reports_missing_required_with_failure_exit(tmp_path):
     assert result.returncode == 1
     assert "installable missing: missing-local" in result.stdout
     assert "plugin missing: browser:control-in-app-browser" in result.stdout
+
+
+def test_manifest_has_unique_names_and_complete_github_sources():
+    manifest = json.loads((ROOT / "skills-manifest.json").read_text(encoding="utf-8"))
+    skills = manifest["skills"]
+    names = [skill["name"] for skill in skills]
+
+    assert len(names) == len(set(names))
+
+    for skill in skills:
+        if skill["type"] != "github":
+            continue
+        assert skill.get("repo")
+        assert skill.get("path")
+        assert skill.get("ref")
+
+
+def test_install_missing_batches_github_skills_from_same_repo(monkeypatch, tmp_path):
+    manage = load_manage_module()
+    clone_commands = []
+
+    def fake_run(command, check):
+        if command[:2] == ["git", "clone"]:
+            clone_commands.append(command)
+            Path(command[-1]).mkdir(parents=True)
+            return subprocess.CompletedProcess(command, 0)
+        if command[:4] == ["git", "-C", command[2], "sparse-checkout"]:
+            checkout = Path(command[2])
+            for skill_path in command[5:]:
+                source = checkout / skill_path
+                source.mkdir(parents=True)
+                (source / "SKILL.md").write_text("---\nname: test\n---\n", encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0)
+        raise AssertionError(command)
+
+    monkeypatch.setattr(manage.subprocess, "run", fake_run)
+    skills = [
+        manage.Skill(
+            name="one",
+            type="github",
+            required=True,
+            repo="owner/repo",
+            path="skills/one",
+            ref="main",
+        ),
+        manage.Skill(
+            name="two",
+            type="github",
+            required=True,
+            repo="owner/repo",
+            path="skills/two",
+            ref="main",
+        ),
+    ]
+
+    result = manage.install_missing(skills, tmp_path / "skills", dry_run=False)
+
+    assert result == 0
+    assert len(clone_commands) == 1
+    assert (tmp_path / "skills" / "one" / "SKILL.md").is_file()
+    assert (tmp_path / "skills" / "two" / "SKILL.md").is_file()
